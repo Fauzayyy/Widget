@@ -17,7 +17,7 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-  res.sendFile('index.html', {
+  res.sendFile('index/index.html', {
     root: __dirname
   });
 });
@@ -35,14 +35,14 @@ var IdUser = 0;
 io.on('connection', (socket) => {
 
 
- 
+
 
     socket.broadcast.emit('daftar users',sessions_users);
     io.emit('daftar user',sessions_users);
 
- 
 
-  
+
+
    socket.on('create-session', function(data) {
     console.log('Create session: ' + data);
 
@@ -91,7 +91,7 @@ socket.on('message',(msg,to)=>{
   socket.on('disconnect', (reason)=>{
     var connectionMessage = socket.username + " Disconnected from Socket " + socket.id;
     console.log(connectionMessage);
-  
+
 
     const clientLocal = sessions_users.find(sess => sess.username == socket.username);
     const sessionIndexLocal = sessions_users.findIndex(sess => sess.username == socket.username);
@@ -118,7 +118,7 @@ const usersaktif = function(io){
     );
     }
 io.emit('list on',dataAktif);
-  
+
   }
 
 
