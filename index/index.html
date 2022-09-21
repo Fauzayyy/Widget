@@ -1,1 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>	</title>
+</head>
+<body>
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="js/emoji/emojibuttonlistjs.css" />
 
+    <!------ Include the above in your HEAD tag ---------->
+<h1 id="name"></h1>
+<input type="text" id="socketID" hidden>
+  <input type="text" id="username">
+  <br>
+  <button onclick="joined()" id="joined">daftar</button>
+  <br>
+  <ul  class="list-group" id="daftaruser">
+
+  </ul>
+  <br>
+
+  <ul class="list-group" id="log">
+
+  </ul>
+<style>
+
+  .chatbox{
+    width: 400px;
+  height: 400px;
+  }
+  
+</style>
+
+
+<div class="chatbox-holder" id="chatbox">
+
+
+
+
+</div>
+</div>
+
+
+</body>
+</html>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js" integrity="sha512-nhY06wKras39lb9lRO76J4397CH1XpRSLfLJSftTeo3+q2vP7PaebILH9TqH+GRpnOhfAGjuYMVmVTOZJ+682w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+ <script src="js/emoji/emojibuttonlistjs.js"></script>
+<script type="text/javascript">
+
+
+var socket = io('http://localhost:3000');
+
+
+
+function bukachat(ids){
+  $('.min'+ids).click(function(){$(this).closest('.cht'+ids).toggleClass('chatbox-min');
+  });
+  $('.fa-close').click(function(){
+    $(this).closest('.chatbox').hide();
+  });
+}
+
+
+function joined (){
+          var username = $("#username").val();
+          socket.emit('create-session',username);
+       }
+
+function getUsers(username,idusers){
+$("#name").html(username);
+$("#socketID").val(idusers);
+// console.log(username+'  '+idusers);
+
+}
+
+function log(username,iduser,status,clas){
+  $("#log").append("<li class='list-group-item list-group-item-"+clas+"' >"+status+"</li>");
+}
+
+
+const Submit_Pesan = (idS) => {
+         var isipesan = $("#pesan"+idS).val();
+         console.log(isipesan);
+         socket.emit('message',isipesan,idS);
+         $('#msg'+idS).append(
+    '<div class="message-box-holder">'+
+        '<div class="message-box">'+
+          isipesan+
+        '</div>'+
+      '</div>'
+  );
+
+     } 
+
+    function daftaruser (value){
+      $("#daftaruser").empty();
+    $("#chatbox").empty();
+    for (let i = 0; i < value.length; i++) {
+      var datax = value[i].data;
+      $("#daftaruser").append('<li>'+datax.username+'</li>');
+    }
+    $("#chatbox").empty();
+  for (let i = 0; i < value.length; i++) {
+    const val = value[i].data;
+    // console.log(val);
+  
+    if(val.username != "admin" || val.username == ""){
+
+    $("#chatbox").append('<div class="chatbox-min chatbox cht'+val.idS+'" id="chtbox'+val.username+'">'+
+        '<div class="chatbox-top">'+
+      '<div class="chatbox-avatar">'+
+        '<a target="_blank" href="https://www.facebook.com/mfreak"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.fsJIMUB57z_e-KHgDYVHWAHaHa%26pid%3DApi&f=1" /></a>'+
+      '</div>'+
+      '<div class="chat-partner-name">'+
+        '<span id="status'+val.username+'" class="status online"></span>'+
+        '<a target="_blank" href="https://www.facebook.com/mfreak" id="name">'+val.username+'</a>'+
+      '</div>'+
+      '<div class="chatbox-icons">'+
+        '<a href="javascript:void(0);" onclick ="bukachat(\''+val.idS+'\')"><i class="fa fa-minus min'+val.idS+'"></i></a>'+
+        '<a href="javascript:void(0);"><i class="fa fa-close '+val.idS+'"></i></a>  '+     
+      '</div>'+
+    '</div>'+
+    '<div class="chat-messages msg'+val.idS+' '+val.username+' " id="msg'+val.idS+'">'+
+
+
+      '</div>'+
+      '<div class="chat-input-holder">'+
+      '<textarea class="chat-input" id="pesan'+val.idS+'"></textarea>  <button style="border:none;" id="button'+val.idS+'">😊</button>'+
+      '<input type="submit" value="Send" onclick="Submit_Pesan(\''+val.idS+'\')" class="message-send" />'+
+      '</div>'
+        );
+
+        var margin = 10,
+            instance1 = new emojiButtonList( "button"+val.idS, {
+                dropDownXAlign: "left",
+                textBoxID: "pesan"+val.idS,
+                yAlignMargin: margin,
+                xAlignMargin: margin
+            } )
+      }
+  }
+   
+    }
+
+    function emojiClickEvent( emojiText ) {
+            document.title += " " + emojiText;
+        }
+
+    function list_on(value){
+      console.log(value);
+
+    }
+
+socket.on('login',(datavalue) =>{
+  getUsers(datavalue.users,datavalue.id);
+  }); 
+
+socket.on('user join',(datavalue) =>{
+  log(datavalue.users,datavalue.id,datavalue.users + ' join','success');
+  // var IDstatus = "#status"+datavalue.users;
+  // $(IDstatus).removeClass( "donot-disturb" ).addClass( "online" );
+
+  }); 
+  
+
+  
+socket.on('daftar users',function(value){
+  // console.log(value);
+//  daftaruser (value);
+  });
+
+  socket.on('daftar user',function(value){
+  // console.log(value);
+//  daftaruser (value);
+  });
+
+
+
+socket.on('list on',function(val){
+  // list_on(val);
+  console.log(val);
+  daftaruser (val);
+
+});
+
+
+socket.on('pesan',function(valmsg){
+  console.log(valmsg.value);
+  console.log(valmsg.id);
+  console.log(valmsg.from);
+  console.log(valmsg.username);
+  $('#chtbox'+valmsg.username).removeClass( "chatbox-min" ).addClass( "chatbox" );
+  var IDstatus = "#status"+valmsg.username;
+  $(IDstatus).removeClass( "donot-disturb" ).addClass( "online" );
+  if(valmsg.id != valmsg.from){
+  $('#msg'+valmsg.from).append(
+    '<div class="message-box-holder">'+
+        '<div class="message-sender">'+
+           valmsg.username+
+         '</div>'+
+        '<div class="message-box message-partner">'+
+          valmsg.value+
+        '</div>'+
+      '</div>'
+  );
+  }else if(valmsg.id == valmsg.from){
+    $('#msg'+valmsg.id).append(
+    '<div class="message-box-holder">'+
+        '<div class="message-sender">'+
+           valmsg.username+
+         '</div>'+
+        '<div class="message-box message-partner">'+
+          valmsg.value+
+        '</div>'+
+      '</div>'
+  );
+  }
+  bunyi();
+})
+
+socket.on('user left', (data) => {
+    // console.log(data.username);
+    log(data.username,data.id,data.username + ' left','danger');
+  //   var IDstatus = "#status"+data.username;
+  // $(IDstatus).removeClass( "online" ).addClass( "donot-disturb" );
+  // console.log(data);
+  });
+  
+
+  socket.on('disconnect', () => {
+  log('','','you have been disconnected');
+  });
+
+  function bunyi() {
+  var bel = new Audio('ringtone/chat.mp3');
+  bel.play();
+}
+
+
+
+</script>

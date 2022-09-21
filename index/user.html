@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Socket.IO Chat Example</title>
+  <link rel="stylesheet" href="css/style2.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+</head>
+<style>
+   #chat-circle {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  background: #5A5EB9;
+  width: 80px;
+  height: 80px;  
+  border-radius: 50%;
+  color: white;
+  padding: 28px;
+  cursor: pointer;
+  box-shadow: 0px 3px 16px 0px rgba(0, 0, 0, 0.6), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.btn#my-btn {
+     background: white;
+    padding-top: 13px;
+    padding-bottom: 12px;
+    border-radius: 45px;
+    padding-right: 40px;
+    padding-left: 40px;
+    color: #5865C3;
+}
+#chat-overlay {
+    background: rgba(255,255,255,0.1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: none;
+}
+</style>
+<body>
+  <h1 id="log"></h1>
+  <h1 id="name"></h1>
+  <br>
+  <label for="">Username :</label>
+  <br>
+  <input type="text" id="username">
+  <input type="text" hidden id="socketID">
+  <input type="text" hidden id="socketIDAdmin">
+
+  <button onclick="joined()" id="submit">Submit</button>
+  <br><br><br>
+
+
+  <input type="text" id="input">
+  <button onclick="submit()" id="submit">Submit</button>
+  <br><br>
+
+  <div class="users">
+      <ul class="userlist">
+
+      </ul>
+  </div>
+
+  <div class="chatArea">
+      <ul class="messages">
+
+      </ul>
+  </div>
+
+
+<div id="chat-circle" class="btn btn-raised click-show">
+      <div id="chat-overlay"></div>
+      <i class="fa fa-phone fa-xl"></i>
+</div>
+<div id="displaychat" style="display:none;">
+  <div class="chatbox-holder">
+      <div class="chatbox">
+        <div class="chatbox-top">
+          <div class="chatbox-avatar">
+            <a target="_blank" href=""><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.fsJIMUB57z_e-KHgDYVHWAHaHa%26pid%3DApi&f=1" /></a>
+          </div>
+          <div class="chat-partner-name">
+            <!-- <span id="status" class="status donot-disturb"></span> -->
+            <a target="_blank" href="">Chat Admin</a>
+          </div>
+          <div class="chatbox-icons">
+         <!--    <a href="javascript:void(0);"><i id="click" class="fa fa-minus"></i></a> -->
+            <a href="javascript:void(0);"><i class="fa fa-close"></i></a>       
+          </div>      
+        </div>
+        
+        <div class="chat-messages">
+           <div class="message-box-holder">
+            <div class="message-box">
+              Hello !!!
+            </div>
+          </div>
+        </div>
+        
+        <div class="chat-input-holder">
+          <textarea id="pesan" class="chat-input"></textarea>
+          <input type="submit" value="Send" onclick="Submit_Pesan()" class="message-send" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <!-- <script src="main.js"></script> -->
+  <script>
+
+$('.fa-minus').click(function(){    $(this).closest('.chatbox');
+        $("#displaychat").css("display","block");
+      });
+    
+       $('.click-show').click(function(){    $(this).closest('.chatbox');
+        $("#displaychat").css("display","block");
+    
+      });
+    
+      $('.fa-close').click(function(){
+        // $(this).closest('.chatbox').hide();
+           // $(this).css("display","none");
+          $("#displaychat").css("display","none");
+      });
+
+
+    
+    var Status_admin = $("#status");
+           var $messages = $('.messages'); 
+           var $areapesan = $(".chat-messages");
+           var $areabalas = $("#AreaBalas");
+    var socket = io('http://localhost:3000');
+
+
+
+function bukachat(ids){
+  $('.min'+ids).click(function(){$(this).closest('.cht'+ids).toggleClass('chatbox-min');
+  });
+  $('.fa-close').click(function(){
+    $(this).closest('.chatbox').hide();
+  });
+}
+
+
+function joined (){
+          var username = $("#username").val();
+          socket.emit('create-session',username);
+       }
+
+function getUsers(username,idusers){
+$("#name").html(username);
+$("#socketID").val(idusers);
+// console.log(username+'  '+idusers);
+}
+
+function log(username,iduser,status){
+  $("#log").append("<ul>"+status+"</ul>");
+}
+
+
+const NewPesan = (value,username,NameTo) => {
+        var usernamex =   $("#name").html();
+        if(username == "admin" && NameTo == usernamex){
+            $areapesan.append(
+        '  <div class="message-box-holder">'+
+        '<div class="message-sender">'+username+
+         '</div>'+
+         '<div class="message-box message-partner">'+
+            value +
+        '</div></div>'
+    ); }else if(usernamex == "admin"){
+        
+          $areapesan.append(
+            '<div class="message-box-holder">'+
+            '<div class="message-sender"> <i class="fa fa-reply" onclick="reply(\''+username+'\',\''+value+'\')"></i>  '+ username +
+            '</div>'+
+            '<div class="message-box message-partner">'+
+            value +
+            '</div>'+
+            '</div>'
+          );
+            }else if(username == usernamex){
+        
+        $areapesan.append(
+          '<div class="message-box-holder">'+
+          '<div class="message-sender">'+ username +
+          '</div>'+
+          '<div class="message-box message-partner">'+
+          value +
+          '</div>'+
+          '</div>'
+        );
+          }
+      }
+
+     const NewAdmin = (value,username) => {
+    $areabalas.append(
+        '  <div class="message-box-holder">'+
+        '<div class="message-box">' +
+            value +
+        '</div></div>'
+    )
+    
+      }
+
+
+
+const Submit_Pesan = () => {
+         var isipesan = $("#pesan").val();
+         var idS = $("#socketID").val();
+         var idAdmin = $("#socketIDAdmin").val();      
+        
+         socket.emit('message',isipesan,idAdmin);
+         $areapesan.append(
+        '<div class="message-box-holder">'+
+        '<div class="message-box">'+
+          isipesan+
+        '</div>'+
+      '</div>'
+  );
+
+            
+   
+
+  
+     } 
+
+     socket.on('daftar user',function(value){
+  // console.log(value);
+//  daftaruser (value);
+console.log(value);
+for (let i = 0; i < value.length; i++) {
+      var datax = value[i];
+      if(datax.username == "admin"){
+      $("#socketIDAdmin").val(datax.idS);
+      }
+    }
+  });
+
+
+
+socket.on('login',(datavalue) =>{
+  getUsers(datavalue.users,datavalue.id);
+  }); 
+
+
+
+socket.on('pesan',function(valmsg){
+  console.log(valmsg.value);
+  console.log(valmsg.id);
+  console.log(valmsg.from);
+  console.log(valmsg.username);
+//   AddValue(valmsg.value,valmsg.username);
+  NewPesan(valmsg.value,valmsg.username,valmsg.nameto);
+})
+
+
+
+
+
+socket.on('user left', (data) => {
+    // console.log(data.username);
+    log(data.username,data.id,data.username + ' left');
+  });
+  
+
+  socket.on('disconnect', () => {
+  log('','','you have been disconnected');
+  });
+
+
+
+      </script>
+</body>
+</html>
