@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
       socket.emit('login',{users:data,id:socket.id});
       socket.broadcast.emit('user join',{users : data , id : socket.id});
       console.log(`User ${data} Joined`);
-    usersaktif(socket)
+    usersaktif(io)
 
     }else{
     sessions_users[sessionIndexLocals].ready = true;
@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
     socket.emit('login',{users:data,id:socket.id});
     socket.broadcast.emit('user join',{users : data , id : socket.id});
     console.log(`User ${data} Joined Again`);
-  usersaktif(socket)
+  usersaktif(io)
 
   }
 
@@ -99,7 +99,7 @@ socket.on('message',(msg,to)=>{
     if(socket.username !== undefined){
     sessions_users[sessionIndexLocal].ready = false;
     socket.broadcast.emit('user left',{username : clientLocal.username, id : clientLocal.id});
-    usersaktif(socket)
+    usersaktif(io)
     }
 
   });
@@ -108,7 +108,7 @@ socket.on('message',(msg,to)=>{
 
 });
 
-const usersaktif = function(socket){
+const usersaktif = function(io){
   const dataAktif = [];
   for (var i = 0; i < sessions_users.length; i++) {
     const data = sessions_users[i];
@@ -117,7 +117,7 @@ const usersaktif = function(socket){
       {data}
     );
     }
-socket.broadcast.emit('list on',dataAktif);
+io.emit('list on',dataAktif);
 
   }
 
