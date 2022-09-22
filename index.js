@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
 
 
     socket.broadcast.emit('daftar users',sessions_users);
-    // socket.emit('daftar user',sessions_users);
+    io.emit('daftar user',sessions_users);
 
 
 
@@ -64,7 +64,7 @@ io.on('connection', (socket) => {
   usersaktif(io)
 
   }
-    socket.broadcast.emit('daftar user',sessions_users);
+
   });
 
 
@@ -101,7 +101,7 @@ socket.on('message',(msg,to)=>{
     socket.broadcast.emit('user left',{username : clientLocal.username, id : clientLocal.id});
     usersaktif(io)
     }
-    socket.broadcast.emit('daftar user',sessions_users);
+
   });
 
 
