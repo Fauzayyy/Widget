@@ -99,7 +99,7 @@ socket.on('message',(msg,to)=>{
     if(socket.username !== undefined){
     sessions_users[sessionIndexLocal].ready = false;
     socket.broadcast.emit('user left',{username : clientLocal.username, id : clientLocal.id});
-    usersaktif(io)
+    // usersaktif(io)
     }
 
   });
