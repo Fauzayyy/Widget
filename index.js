@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('daftar users',sessions_users);
     io.emit('daftar user',sessions_users);
 
-
+usersaktif(io)
 
 
    socket.on('create-session', function(data) {
@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
       socket.emit('login',{users:data,id:socket.id});
       socket.broadcast.emit('user join',{users : data , id : socket.id});
       console.log(`User ${data} Joined`);
-    usersaktif(io)
+    // usersaktif(io)
 
     }else{
     sessions_users[sessionIndexLocals].ready = true;
@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
     socket.emit('login',{users:data,id:socket.id});
     socket.broadcast.emit('user join',{users : data , id : socket.id});
     console.log(`User ${data} Joined Again`);
-  usersaktif(io)
+  // usersaktif(io)
 
   }
 
@@ -99,7 +99,7 @@ socket.on('message',(msg,to)=>{
     if(socket.username !== undefined){
     sessions_users[sessionIndexLocal].ready = false;
     socket.broadcast.emit('user left',{username : clientLocal.username, id : clientLocal.id});
-    usersaktif(io)
+    // usersaktif(io)
     }
 
   });
