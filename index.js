@@ -36,9 +36,9 @@ io.on('connection', (socket) => {
 
 
 
-const Users = sessions_users.find(sess => sess.username == 'admin');
+
     socket.broadcast.emit('daftar users',sessions_users);
-    io.to(Users.username).emit('daftar user',sessions_users);
+    io.emit('daftar user',sessions_users);
 
 
 
