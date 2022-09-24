@@ -82,11 +82,12 @@ socket.on('message',(msg,to)=>{
 });
 })
 
+
 socket.on('send_img', (msg,to,caption) => {
   console.log('received base64 file from' + to);
   const clientLocalSes = sessions_users.find(sess => sess.username == socket.username);
   const ToDataLocalSes = sessions_users.find(sess => sess.idS == to);
-  socket.broadcast.emit('pesan_img', 
+  socket.broadcast.emit('pesan_img',
       {
         "username": socket.username,
         "base64": msg,
