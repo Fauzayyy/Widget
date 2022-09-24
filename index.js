@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const https = require('https');
+const request = require('request');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const fs = require('fs');
@@ -81,6 +82,20 @@ if(ToDataLocalSes.username != undefined || ToDataLocalSes.username != "" ){
      "from" : clientLocalSes.idS,
      "nameto" : ToDataLocalSes.username
 });
+request.post('https://pertamalab.com/adminchat/api/savemsg.php').form(
+  {
+    username:socket.username,
+    value:msg,
+    id_penerima:to,
+    from_chat:clientLocalSes.idS,
+    nama_penerima : ToDataLocalSes.username
+  },function(err,res,json){
+    if(err){
+      console.log("API POST FAILED");
+    }else{
+      console.log(json);
+    }
+  });
 }
 })
 
