@@ -70,10 +70,10 @@ io.on('connection', (socket) => {
 socket.on('message',(msg,to)=>{
   console.log(msg);
   console.log('pesan'+to);
-
-if(ToDataLocalSes.username != undefined || ToDataLocalSes.username != "" ){
   const clientLocalSes = sessions_users.find(sess => sess.username == socket.username);
   const ToDataLocalSes = sessions_users.find(sess => sess.idS == to);
+if(ToDataLocalSes.username != undefined || ToDataLocalSes.username != "" ){
+
 
   socket.broadcast.emit('pesan',{
     'username' : socket.username,
