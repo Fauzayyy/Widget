@@ -88,8 +88,9 @@ request.post('https://pertamalab.com/adminchat/api/savemsg.php').form(
     value:msg,
     id_penerima:to,
     from_chat:clientLocalSes.idS,
-    nama_penerima : ToDataLocalSes.username
-    type : "text"
+    nama_penerima : ToDataLocalSes.username,
+    type : "text",
+    caption :""
   },function(err,res,json){
     if(err){
       console.log("API POST FAILED");
@@ -125,7 +126,8 @@ socket.on('send_img', (msg,to,caption) => {
       id_penerima:to,
       from_chat:clientLocalSes.idS,
       nama_penerima : ToDataLocalSes.username,
-      type: "image"
+      type: "image",
+      caption:caption
     },function(err,res,json){
       if(err){
         console.log("API POST FAILED");
