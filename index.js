@@ -68,12 +68,13 @@ io.on('connection', (socket) => {
 
 
 socket.on('message',(msg,to)=>{
+
+
+if(to != "" || socket.username != "" ){
   console.log(msg);
   console.log('pesan'+to);
   const clientLocalSes = sessions_users.find(sess => sess.username == socket.username);
   const ToDataLocalSes = sessions_users.find(sess => sess.idS == to);
-if(ToDataLocalSes.username != undefined || ToDataLocalSes.username != "" ){
-
 
   socket.broadcast.emit('pesan',{
     'username' : socket.username,
@@ -103,10 +104,11 @@ request.post('https://pertamalab.com/adminchat/api/savemsg.php').form(
 
 
 socket.on('send_img', (msg,to,caption) => {
-  console.log('received base64 file from' + to);
-  const clientLocalSes = sessions_users.find(sess => sess.username == socket.username);
-  const ToDataLocalSes = sessions_users.find(sess => sess.idS == to);
-  if(ToDataLocalSes.username != undefined || ToDataLocalSes.username != "" ){
+
+  if(to != "" || socket.username != "" ){
+    console.log('received base64 file from' + to);
+    const clientLocalSes = sessions_users.find(sess => sess.username == socket.username);
+    const ToDataLocalSes = sessions_users.find(sess => sess.idS == to);
   socket.broadcast.emit('pesan_img',
       {
         "username": socket.username,
