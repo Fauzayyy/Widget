@@ -172,7 +172,6 @@ const usersaktif = function(io){
     );
     }
 io.emit('list on',dataAktif);
-
   }
 
 
