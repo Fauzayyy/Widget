@@ -204,5 +204,4 @@ const createdsessions = function (username,id){
 });
   }
 }
-
 init();
