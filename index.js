@@ -40,8 +40,6 @@ io.on('connection', (socket) => {
     io.emit('daftar user',sessions_users);
     socket.emit('daftar_user',sessions_users);
 
-
-
    socket.on('create-session', function(data) {
     console.log('Create session: ' + data);
 
